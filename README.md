@@ -20,7 +20,7 @@ Add `:ethereumex` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ethereumex, "~> 0.8"}
+    {:ethereumex, "~> 0.9"}
   ]
 end
 ```
@@ -49,11 +49,12 @@ You can also configure the `HTTP` request timeout for requests sent to the Ether
 
 ```elixir
 config :ethereumex,
-  http_options: [pool_timeout: 5000, receive_timeout: 15_000]
+  http_options: [pool_timeout: 5000, receive_timeout: 15_000],
+  http_headers: [{"Content-Type", "application/json"}]
 ```
 
-`:timeout` - timeout to establish a connection, in milliseconds. Default is 8000
-`:recv_timeout` - timeout used when receiving a connection. Default is 5000
+`:pool_timeout` - This timeout is applied when we check out a connection from the pool. Default value is `5_000`.
+`:receive_timeout` - The maximum time to wait for a response before returning an error. Default value is `15_000`
 
 If you want to use IPC you will need to set a few things in your config.
 
@@ -96,73 +97,93 @@ config :ethereumex,
   ipc_request_timeout: 60_000
 ```
 
+## Test
+
+Download `parity` and initialize the password file
+
+```
+$ make setup
+```
+
+Run `parity`
+
+```
+$ make run
+```
+
+Run tests
+
+```
+$ make test
+```
+
 ## Usage
 
 ### Available methods:
 
-* web3_clientVersion
-* web3_sha3
-* net_version
-* net_peerCount
-* net_listening
-* eth_protocolVersion
-* eth_syncing
-* eth_coinbase
-* eth_mining
-* eth_hashrate
-* eth_gasPrice
-* eth_accounts
-* eth_blockNumber
-* eth_getBalance
-* eth_getStorageAt
-* eth_getTransactionCount
-* eth_getBlockTransactionCountByHash
-* eth_getBlockTransactionCountByNumber
-* eth_getUncleCountByBlockHash
-* eth_getUncleCountByBlockNumber
-* eth_getCode
-* eth_sign
-* eth_sendTransaction
-* eth_sendRawTransaction
-* eth_call
-* eth_estimateGas
-* eth_getBlockByHash
-* eth_getBlockByNumber
-* eth_getTransactionByHash
-* eth_getTransactionByBlockHashAndIndex
-* eth_getTransactionByBlockNumberAndIndex
-* eth_getTransactionReceipt
-* eth_getUncleByBlockHashAndIndex
-* eth_getUncleByBlockNumberAndIndex
-* eth_getCompilers
-* eth_compileLLL
-* eth_compileSolidity
-* eth_compileSerpent
-* eth_newFilter
-* eth_newBlockFilter
-* eth_newPendingTransactionFilter
-* eth_uninstallFilter
-* eth_getFilterChanges
-* eth_getFilterLogs
-* eth_getLogs
+* [`web3_clientVersion`](https://eth.wiki/json-rpc/API#web3_clientversion)
+* [`web3_sha3`](https://eth.wiki/json-rpc/API#web3_sha3)
+* [`net_version`](https://eth.wiki/json-rpc/API#net_version)
+* [`net_peerCount`](https://eth.wiki/json-rpc/API#net_peercount)
+* [`net_listening`](https://eth.wiki/json-rpc/API#net_listening)
+* [`eth_protocolVersion`](https://eth.wiki/json-rpc/API#eth_protocolversion)
+* [`eth_syncing`](https://eth.wiki/json-rpc/API#eth_syncing)
+* [`eth_coinbase`](https://eth.wiki/json-rpc/API#eth_coinbase)
+* [`eth_mining`](https://eth.wiki/json-rpc/API#eth_mining)
+* [`eth_hashrate`](https://eth.wiki/json-rpc/API#eth_hashrate)
+* [`eth_gasPrice`](https://eth.wiki/json-rpc/API#eth_gasprice)
+* [`eth_accounts`](https://eth.wiki/json-rpc/API#eth_accounts)
+* [`eth_blockNumber`](https://eth.wiki/json-rpc/API#eth_blocknumber)
+* [`eth_getBalance`](https://eth.wiki/json-rpc/API#eth_getbalance)
+* [`eth_getStorageAt`](https://eth.wiki/json-rpc/API#eth_getstorageat)
+* [`eth_getTransactionCount`](https://eth.wiki/json-rpc/API#eth_gettransactioncount)
+* [`eth_getBlockTransactionCountByHash`](https://eth.wiki/json-rpc/API#eth_getblocktransactioncountbyhash)
+* [`eth_getBlockTransactionCountByNumber`](https://eth.wiki/json-rpc/API#eth_getblocktransactioncountbynumber)
+* [`eth_getUncleCountByBlockHash`](https://eth.wiki/json-rpc/API#eth_getunclecountbyblockhash)
+* [`eth_getUncleCountByBlockNumber`](https://eth.wiki/json-rpc/API#eth_getunclecountbyblocknumber)
+* [`eth_getCode`](https://eth.wiki/json-rpc/API#eth_getcode)
+* [`eth_sign`](https://eth.wiki/json-rpc/API#eth_sign)
+* [`eth_sendTransaction`](https://eth.wiki/json-rpc/API#eth_sendtransaction)
+* [`eth_sendRawTransaction`](https://eth.wiki/json-rpc/API#eth_sendrawtransaction)
+* [`eth_call`](https://eth.wiki/json-rpc/API#eth_call)
+* [`eth_estimateGas`](https://eth.wiki/json-rpc/API#eth_estimategas)
+* [`eth_getBlockByHash`](https://eth.wiki/json-rpc/API#eth_getblockbyhash)
+* [`eth_getBlockByNumber`](https://eth.wiki/json-rpc/API#eth_getblockbynumber)
+* [`eth_getTransactionByHash`](https://eth.wiki/json-rpc/API#eth_gettransactionbyhash)
+* [`eth_getTransactionByBlockHashAndIndex`](https://eth.wiki/json-rpc/API#eth_gettransactionbyblockhashandindex)
+* [`eth_getTransactionByBlockNumberAndIndex`](https://eth.wiki/json-rpc/API#eth_gettransactionbyblocknumberandindex)
+* [`eth_getTransactionReceipt`](https://eth.wiki/json-rpc/API#eth_gettransactionreceipt)
+* [`eth_getUncleByBlockHashAndIndex`](https://eth.wiki/json-rpc/API#eth_getunclebyblockhashandindex)
+* [`eth_getUncleByBlockNumberAndIndex`](https://eth.wiki/json-rpc/API#eth_getunclebyblocknumberandindex)
+* [`eth_getCompilers`](https://eth.wiki/json-rpc/API#eth_getcompilers)
+* [`eth_compileLLL`](https://eth.wiki/json-rpc/API#eth_compilelll)
+* [`eth_compileSolidity`](https://eth.wiki/json-rpc/API#eth_compilesolidity)
+* [`eth_compileSerpent`](https://eth.wiki/json-rpc/API#eth_compileserpent)
+* [`eth_newFilter`](https://eth.wiki/json-rpc/API#eth_newfilter)
+* [`eth_newBlockFilter`](https://eth.wiki/json-rpc/API#eth_newblockfilter)
+* [`eth_newPendingTransactionFilter`](https://eth.wiki/json-rpc/API#eth_newpendingtransactionfilter)
+* [`eth_uninstallFilter`](https://eth.wiki/json-rpc/API#eth_uninstallfilter)
+* [`eth_getFilterChanges`](https://eth.wiki/json-rpc/API#eth_getfilterchanges)
+* [`eth_getFilterLogs`](https://eth.wiki/json-rpc/API#eth_getfilterlogs)
+* [`eth_getLogs`](https://eth.wiki/json-rpc/API#eth_getlogs)
 * eth_getProof
-* eth_getWork
-* eth_submitWork
-* eth_submitHashrate
-* db_putString
-* db_getString
-* db_putHex
-* db_getHex
-* shh_post
-* shh_version
-* shh_newIdentity
-* shh_hasIdentity
-* shh_newGroup
-* shh_addToGroup
-* shh_newFilter
-* shh_uninstallFilter
-* shh_getFilterChanges
-* shh_getMessages
+* [`eth_getWork`](https://eth.wiki/json-rpc/API#eth_getwork)
+* [`eth_submitWork`](https://eth.wiki/json-rpc/API#eth_submitwork)
+* [`eth_submitHashrate`](https://eth.wiki/json-rpc/API#eth_submithashrate)
+* [`db_putString`](https://eth.wiki/json-rpc/API#db_putstring)
+* [`db_getString`](https://eth.wiki/json-rpc/API#db_getstring)
+* [`db_putHex`](https://eth.wiki/json-rpc/API#db_puthex)
+* [`db_getHex`](https://eth.wiki/json-rpc/API#db_gethex)
+* [`shh_post`](https://eth.wiki/json-rpc/API#shh_post)
+* [`shh_version`](https://eth.wiki/json-rpc/API#shh_version)
+* [`shh_newIdentity`](https://eth.wiki/json-rpc/API#shh_newidentity)
+* [`shh_hasIdentity`](https://eth.wiki/json-rpc/API#shh_hasidentity)
+* [`shh_newGroup`](https://eth.wiki/json-rpc/API#shh_newgroup)
+* [`shh_addToGroup`](https://eth.wiki/json-rpc/API#shh_addtogroup)
+* [`shh_newFilter`](https://eth.wiki/json-rpc/API#shh_newfilter)
+* [`shh_uninstallFilter`](https://eth.wiki/json-rpc/API#shh_uninstallfilter)
+* [`shh_getFilterChanges`](https://eth.wiki/json-rpc/API#shh_getfilterchanges)
+* [`shh_getMessages`](https://eth.wiki/json-rpc/API#shh_getmessages)
 
 ### IpcClient
 
@@ -203,8 +224,8 @@ end
 Now load the ABI and pass the method signature. Note that the address needs to be converted to bytes:
 
 ```elixir
-address           = "0x123" |> String.slice(2..-1) |> Base.decode16(case: :mixed)
-contract_address  = "0x432"
+address           = "0xF742d4cE7713c54dD701AA9e92101aC42D63F895" |> String.slice(2..-1) |> Base.decode16!(case: :mixed)
+contract_address  = "0xC28980830dD8b9c68a45384f5489ccdAF19D53cC"
 abi_encoded_data  = ABI.encode("balanceOf(address)", [address]) |> Base.encode16(case: :lower)
 ```
 
@@ -254,9 +275,9 @@ requests = [
  {
    :ok,
    [
-     "Parity//v1.7.2-beta-9f47909-20170918/x86_64-macos/rustc1.19.0",
-     "42",
-     "0x47173285a8d7341e5e972fc677286384f802f8ef42a5ec5f03bbfa254cb01fad"
+     {:ok, "Parity//v1.7.2-beta-9f47909-20170918/x86_64-macos/rustc1.19.0"},
+     {:ok, "42"},
+     {:ok, "0x47173285a8d7341e5e972fc677286384f802f8ef42a5ec5f03bbfa254cb01fad"}
    ]
  }
 ```
